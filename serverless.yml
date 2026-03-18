@@ -1,0 +1,55 @@
+org: trainwithdivy
+app: divy-node-http-api-project
+service: divy-node-http-api-project
+frameworkVersion: '4'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ap-south-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource:
+        - arn:aws:dynamodb:ap-south-1:288390777244:table/KaamKaro
+
+functions:
+  hello:
+    handler: src/hello.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
+  kaamBharo:
+    handler: src/kaamBharo.handler
+    events:
+      - httpApi:
+          path: /kaam
+          method: post
+  kaamDikhao:
+    handler: src/kaamDikhao.handler
+    events:
+      - httpApi:
+          path: /kaam
+          method: get
+  kaamKhatamKaro:
+    handler: src/kaamKhatamKaro.handler
+    events:
+      - httpApi:
+          path: /kaam/{id}
+          method: put
+
+resources:
+  Resources:
+    KaamKaro:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: KaamKaro
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
